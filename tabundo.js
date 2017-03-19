@@ -126,8 +126,8 @@ function normalize(term) {
 
 function getAllTabs(ids) {
   return Rx.Observable.from(ids)
-    .map((x) => tabsGet(x))
-    .concatAll()
+    .flatMap(id => tabsGet(id).catch(err => Rx.Observable.empty()))
+    .filter(id => id !== undefined)
     .toArray();
 }
 
