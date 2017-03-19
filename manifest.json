@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "name": "Tabundo",
+  "description": "Better tab navigation. Ctrl + Z for browser tabs.",
+  "version": "1.0",
+  "homepage_url": "https://github.com/myhau/tabundo",
+  "background": {
+    "scripts": [
+      "js/tabundo.js"
+    ],
+    "persistent": true
+  },
+  "icons": {
+    "16": "400x400.png",
+    "48": "400x400.png",
+    "128": "400x400.png"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "commands": {
+    "tabundo_undo_tab": {
+      "suggested_key": {
+        "default": "Alt+Z",
+        "mac": "Alt+Z"
+      },
+      "description": "Undo"
+    },
+    "tabundo_redo_tab": {
+      "suggested_key": {
+        "default": "Alt+Shift+Z",
+        "mac": "Alt+Shift+Z"
+      },
+      "description": "Redo"
+    }
+  }
+}
