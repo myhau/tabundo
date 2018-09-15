@@ -1,6 +1,7 @@
 // todo: rxify everything
 
 
+console.log("YEP");
 let fromListener = (listenerAddition) => {
   let subject = new Rx.Subject();
 
@@ -13,6 +14,12 @@ let fromListener = (listenerAddition) => {
   return subject;
 };
 
+let api;
+if(typeof chrome === 'undefined') {
+  api = browser;
+} else {
+  api = chrome;
+}
 
 
 function StateWithTimeTravel() {
@@ -81,14 +88,14 @@ function tabRemoved(tabId) {
 }
 
 
-chrome.tabs.onRemoved.addListener(tabRemoved);
-chrome.tabs.onActivated.addListener(tabChanged);
+api.tabs.onRemoved.addListener(tabRemoved);
+api.tabs.onActivated.addListener(tabChanged);
 
-let tabsGet = Rx.Observable.fromCallback(chrome.tabs.get);
-let tabUpdate = Rx.Observable.fromCallback(chrome.tabs.update);
-let windowUpdate = Rx.Observable.fromCallback(chrome.windows.update);
+let tabsGet = Rx.Observable.fromCallback(api.tabs.get);
+// let tabUpdate = Rx.Observable.fromCallback(api.tabs.update);
+// let windowUpdate = Rx.Observable.fromCallback(api.windows.update);
 
-fromListener(chrome.commands.onCommand)
+fromListener(api.commands.onCommand)
   .subscribe(([command]) => {
 
     let tabToOpen;
@@ -103,11 +110,11 @@ fromListener(chrome.commands.onCommand)
 
       // todo: what to do with this sideffect + callback hell here ?
 
-      chrome.tabs.get(tabToOpen, ({windowId, tabId}) => {
+      api.tabs.get(tabToOpen, ({windowId, tabId}) => {
 
-        chrome.tabs.update(tabToOpen, {active: true}, () => {
+        api.tabs.update(tabToOpen, {active: true}, () => {
 
-          chrome.windows.update(windowId, {focused: true});
+          api.windows.update(windowId, {focused: true});
 
         });
 
@@ -131,7 +138,7 @@ function getAllTabs(ids) {
     .toArray();
 }
 
-fromListener(chrome.omnibox.onInputChanged)
+fromListener(api.omnibox.onInputChanged)
 
   .flatMap(([text, suggest]) =>
 
@@ -165,7 +172,7 @@ fromListener(chrome.omnibox.onInputChanged)
   });
 
 
-fromListener(chrome.omnibox.onInputEntered)
+fromListener(api.omnibox.onInputEntered)
   .subscribe(([text]) =>
-    chrome.tabs.update(parseInt(text, 10), {active: true})
+    api.tabs.update(parseInt(text, 10), {active: true})
   );
